@@ -1,50 +1,44 @@
+"""A small command-line Snake, Water, Gun game."""
+
+from __future__ import annotations
+
 import random
 
-# Snake Water Gun or Rock Paper Scissors
-def gameWin(comp, you):
-    # If two values are equal, declare a tie!
-    if comp == you:
+CHOICES = ("s", "w", "g")
+NAMES = {"s": "Snake", "w": "Water", "g": "Gun"}
+
+
+def game_win(computer: str, player: str) -> bool | None:
+    """Return True for a player win, False for a loss, and None for a tie."""
+    if computer not in CHOICES or player not in CHOICES:
+        raise ValueError("Choices must be 's', 'w', or 'g'.")
+    if computer == player:
         return None
+    return (computer, player) in {("s", "g"), ("w", "s"), ("g", "w")}
 
-    # Check for all possibilities when computer chose s
-    elif comp == 's':
-        if you=='w':
-            return False
-        elif you=='g':
-            return True
-    
-    # Check for all possibilities when computer chose w
-    elif comp == 'w':
-        if you=='g':
-            return False
-        elif you=='s':
-            return True
-    
-    # Check for all possibilities when computer chose g
-    elif comp == 'g':
-        if you=='s':
-            return False
-        elif you=='w':
-            return True
 
-print("Comp Turn: Snake(s) Water(w) or Gun(g)?")
-randNo = random.randint(1, 3) 
-if randNo == 1:
-    comp = 's'
-elif randNo == 2:
-    comp = 'w'
-elif randNo == 3:
-    comp = 'g'
+def prompt_choice() -> str:
+    while True:
+        choice = input("Your turn [s]nake, [w]ater, or [g]un: ").strip().lower()
+        if choice in CHOICES:
+            return choice
+        print("Please enter s, w, or g.")
 
-you = input("Your Turn: Snake(s) Water(w) or Gun(g)?")
-a = gameWin(comp, you)
 
-print(f"Computer chose {comp}")
-print(f"You chose {you}")
+def main() -> None:
+    computer = random.choice(CHOICES)
+    player = prompt_choice()
+    result = game_win(computer, player)
 
-if a == None:
-    print("The game is a tie!")
-elif a:
-    print("You Win!")
-else:
-    print("You Lose!")
+    print(f"Computer chose {NAMES[computer]}.")
+    print(f"You chose {NAMES[player]}.")
+    if result is None:
+        print("The game is a tie!")
+    elif result:
+        print("You win!")
+    else:
+        print("You lose!")
+
+
+if __name__ == "__main__":
+    main()
